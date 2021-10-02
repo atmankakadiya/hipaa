@@ -1,0 +1,94 @@
+<!-- main title -->
+<h2 class="title-consents">patient consents</h2>
+
+<div class="table-responsive">
+  <div class="hipaa-create">
+    <p class="mb-0">HIPAA <span (click)="showModalhipaa()"><img src="assets/images/createicon.png" alt=""></span></p>
+  </div>
+  <!-- hipaa recode(crud) -->
+  <nz-table class="consents-table" #borderedTable nzBordered [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>STATUS</th>
+        <th>HIPAA SIGNED</th>
+        <th>HIPAA EXPIRES</th>
+        <th>ATTACH / VIEW</th>
+        <th>EDIT / DELETE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of dataSet; let index=index">
+        <td>{{data.status}}</td> 
+        <td>{{data.signed}}</td>
+        <td>{{data.expires}}</td>
+        <td> 
+          <div tooltip="attach" flow="left" class="image-upload">
+            <label for="file-input{{index}}">
+                <img src={{paperclip}}  alt="img"/>
+            </label>
+            <input (change)="onSelectFile($event,index)" id="file-input{{index}}" type='file'/>
+          </div>
+          <div *ngIf="data.img" tooltip="view" flow="right"><img (click)="showpreview(data.img)" src={{view}} alt="img"></div>
+        </td>
+        <td>
+          <div tooltip="edit" flow="left"><img src={{pencil}} alt="img" (click)="showModalMiddle(data, index)"></div>
+          <div tooltip="delete" flow="right"><img src={{deleteimg}} (click)="showModalDelete(index)" alt="img"></div>
+        </td>
+      </tr> 
+    </tbody>
+  </nz-table>  
+</div>
+
+<!-- update hipaa modal -->
+<nz-modal
+[(nzVisible)]="isVisibleMiddle"
+nzTitle="Edit HIPAA Consent"
+nzCentered
+(nzOnCancel)="handleCancelMiddle()"
+(nzOnOk)="handleOkMiddle()">
+<ng-container *nzModalContent>
+    <div class="create-data">
+        <div class="signed">
+            <label for=""><span>*</span>SIGNED:</label>
+            <nz-date-picker [nzFormat]="datesigned" [(ngModel)]="selectedRow.signed"></nz-date-picker>
+        </div>
+        <div class="expires">
+            <label for=""><span>*</span>EXPIRES:</label>
+            <nz-date-picker [nzFormat]="dateexpires" [(ngModel)]="selectedRow.expires"></nz-date-picker>
+        </div>
+    </div>
+</ng-container>
+</nz-modal>
+
+<!-- create hipaa modal -->
+<nz-modal
+[(nzVisible)]="isVisibleConsent"
+nzTitle="Add New HIPAA Consent"
+nzCentered
+(nzOnCancel)="handleCancelMiddle()"
+(nzOnOk)="hipaaOkCreate()">
+<ng-container *nzModalContent>
+    <div class="create-data">
+        <div class="signed">
+            <label for=""><span>*</span>SIGNED:</label>
+            <nz-date-picker [nzFormat]="datesigned" [(ngModel)]="hipaacreatedate"></nz-date-picker>
+        </div>
+        <div class="expires">
+            <label for=""><span>*</span>EXPIRES:</label>
+            <nz-date-picker [nzFormat]="dateexpires" [(ngModel)]="hipaacreateexpire"></nz-date-picker>
+        </div>
+    </div>
+</ng-container>
+</nz-modal>
+
+<!-- images preview -->
+<nz-modal
+[(nzVisible)]="isVisiblePreview"
+nzCentered nzWidth="1080" [nzFooter]=null
+(nzOnCancel)="handleCancelPreview()">
+<ng-container *nzModalContent>
+    <div>
+      <img src={{selectedImg}} width="100%">
+    </div>
+</ng-container>
+</nz-modal>
